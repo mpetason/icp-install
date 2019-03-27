@@ -1,0 +1,63 @@
+---
+- hosts: master
+  vars:
+  tasks:
+  - name: add gpg key for docker
+    apt_key:
+      url: https://download.docker.com/linux/ubuntu/gpg
+      state: present
+  - name: add docker repos
+    apt_repository:
+      repo: deb https://download.docker.com/linux/ubuntu xenial stable
+      state: present
+  - name: update apt repos
+    apt:
+      update_cache: yes
+  - name: install vim
+    apt:
+      name: vim
+      state: present
+  - name: install docker-ce
+    apt:
+      name: docker-ce
+      state: present
+  - name: install docker-ce-cli
+    apt:
+      name: docker-ce-cli
+      state: present
+  - name: install containerd.io
+    apt:
+      name: containerd.io
+      state: present
+  - name: install docker-compose
+    apt:
+      name: docker-compose    # Required for docker-py
+      state: present
+  # - name: setup worker /etc/hosts
+  #   lineinfile:
+  #     path: /etc/hosts
+  #     line: ' worker'
+  # - name: setup master /etc/hosts
+  #   lineinfile:
+  #     path: /etc/hosts
+  #     line: ' master'
+  - name: pull icp inception
+    docker_image:
+      name: ibmcom/icp-inception
+      tag: 3.1.0
+  - name: make icp directory
+    file: 
+      path: /opt/ibm-cloud-private-ce-3.1.0
+      state: directory
+      mode: 0755
+- hosts: workers
+  vars:
+  tasks:
+  # - name: setup worker /etc/hosts
+  #   lineinfile:
+  #     path: /etc/hosts
+  #     line: ' worker'
+  # - name: setup master /etc/hosts
+  #   lineinfile:
+  #     path: /etc/hosts
+  #     line: ' master'
